@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decrypt the Digit</title>
+  <style>
+    @font-face {
+      font-family: 'Gheray Regular';
+      src: url('Gheray-Regular.otf') format('opentype');
+    }
+
+    @font-face {
+      font-family: 'Dunbar';
+      src: url('Dunbar-Regular.otf') format('opentype');
+    }
+
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      background-color: #421821;
+      color: #f4f4f9;
+    }
+
+    header {
+      background-color: #7c0708;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    header h1 {
+      font-family: 'Gheray Regular', sans-serif;
+      font-size: 48px;
+      margin: 0;
+      color: #f4f4f9;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 16px;
+      color: #ff9999;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #421821;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .players {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .group {
+      text-align: center;
+      font-family: 'Dunbar', sans-serif;
+      font-size: 1.4em;
+      margin: 10px;
+      background-color: #7c0708;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .group .name {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #f4f4f9;
+      font-size: 1.5em;
+    }
+
+    .group .tally {
+      font-size: 2.5em;
+      color: #ffc4c4;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    .add-new-group-button {
+      font-family: 'Dunbar', sans-serif;
+      font-size: 1.2em;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #ff9999;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .add-new-group-button:hover {
+      background-color: #7c0708;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Decrypt the Digit</h1>
+  <p>Do you have what it takes to decrypt the digit?</p>
+</header>
+
+<div class="container">
+  <section id="players:">
+    <h2 style="font-family: 'Dunbar', sans-serif; text-align: center;">Players:</h2>
+
+    <!-- Button to add a new group -->
+    <button class="add-new-group-button" onclick="addNewGroup()">Add New Group</button>
+
+    <!-- Group Players -->
+    <div class="players" id="groupsContainer">
+      <div class="group" id="A">
+        <div class="name" id="groupBName">A</div>
+        <div class="tally" id="tallyA"></div>
+        <button onclick="changeGroupName('A')">Change Name</button>
+        <button onclick="addTally('A')">Add Tally</button>
+      </div>
+      <div class="group" id="B">
+        <div class="name" id="groupBName">B</div>
+        <div class="tally" id="tallyB"></div>
+        <button onclick="changeGroupName('B')">Change Name</button>
+        <button onclick="addTally('B')">Add Tally</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  let groupTally = {
+    A: 0,
+    B: 0,
+    C: 0,
+    D: 0
+  };
+
+  let groupCount = 2;
+  const maxGroups = 4;
+
+  function addTally(group) {
+    if (groupTally[group] < 3) {
+      groupTally[group] += 1;
+      document.getElementById('tally' + group).textContent = '|'.repeat(groupTally[group]);
+    }
+  }
+
+  function addNewGroup() {
+    if (groupCount >= maxGroups) {
+      alert('You cannot add more than 4 groups.');
+      return;
+    }
+
+    groupCount++;
+    const groupName = String.fromCharCode(64 + groupCount);
+    const groupContainer = document.createElement('div');
+    groupContainer.classList.add('group');
+    groupContainer.id = 'group' + groupName;
+
+    const groupNameDiv = document.createElement('div');
+    groupNameDiv.classList.add('name');
+    groupNameDiv.id = 'group' + groupName + 'Name';
+    groupNameDiv.textContent = groupName;
+
+    const tally = document.createElement('div');
+    tally.classList.add('tally');
+    tally.id = 'tally' + groupName;
+    tally.textContent = '';
+
+    const changeNameButton = document.createElement('button');
+    changeNameButton.textContent = 'Change Name';
+    changeNameButton.onclick = function() {
+      changeGroupName(groupName);
+    };
+
+    const addTallyButton = document.createElement('button');
+    addTallyButton.textContent = 'Add Tally';
+    addTallyButton.onclick = function() {
+      addTally(groupName);
+    };
+
+    groupContainer.appendChild(groupNameDiv);
+    groupContainer.appendChild(tally);
+    groupContainer.appendChild(changeNameButton);
+    groupContainer.appendChild(addTallyButton);
+
+    document.getElementById('groupsContainer').appendChild(groupContainer);
+  }
+
+  function changeGroupName(group) {
+    const newName = prompt("Enter new name for Group " + group + ":");
+    if (newName && newName.trim() !== "") {
+      document.getElementById('group' + group + 'Name').textContent = newName.trim();
+    }
+  }
+
+  // Placeholder for QR code scanning functionality
+  function scanQRCode() {
+    alert('QR Code scanning feature is under development.');
+  }
+</script>
+
+</body>
+</html>
